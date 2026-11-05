@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Super Cars World</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: white;
+            color: black;
+            text-align: center;
+        }
+
+        form {
+            width: 300px;
+            margin: 30px auto;
+            padding: 20px;
+            border: 1px solid gray;
+            border-radius: 8px;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: black;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #message {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>SUPER CARS WORLD</h1>
+
+    <form id="carForm">
+        <h2>Join Our Community</h2>
+
+        <input type="text" name="name" placeholder="Enter your name" required>
+
+        <input type="email" name="email" placeholder="Enter your email" required>
+
+        <input type="tel" name="phone" placeholder="Enter your phone number"
+               pattern="[0-9]{10}" maxlength="10" required>
+
+        <button type="submit" id="btn">Submit</button>
+
+        <p id="message"></p>
+    </form>
+
+    <script>
+        const SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+        document.getElementById("carForm").onsubmit = async function(e) {
+            e.preventDefault();
+
+            const message = document.getElementById("message");
+            const button = document.getElementById("btn");
+
+            if (SCRIPT_URL.includes("PASTE_YOUR")) {
+                message.innerHTML = "Please configure the Apps Script URL.";
+                return;
+            }
+
+            button.disabled = true;
+            button.innerHTML = "Submitting...";
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    body: new URLSearchParams(new FormData(this))
+                });
+
+                message.innerHTML = "Form submitted successfully!";
+                this.reset();
+
+            } catch (error) {
+                message.innerHTML = "Submission failed. Try again.";
+            }
+
+            button.disabled = false;
+            button.innerHTML = "Submit";
+        };
+    </script>
+
+</body>
+</html>
