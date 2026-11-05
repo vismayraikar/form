@@ -1,100 +1,196 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Join Super Cars World</title>
 
     <style>
-        body {
-            font-family: Arial;
-            background: white;
-            color: black;
-            text-align: center;
-        }
-
-        form {
-            width: 300px;
-            margin: 30px auto;
-            padding: 20px;
-            border: 1px solid gray;
-            border-radius: 8px;
-        }
-
-        input, button {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
+        body {
+            font-family: Arial, sans-serif;
+            background: white;
+            color: black;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .form-section {
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .form-card {
+            background: white;
+            padding: 25px;
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .form-card h2 {
+            margin-bottom: 10px;
+        }
+
+        .form-card p {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin: 12px 0 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
         button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
             background: black;
             color: white;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
         }
 
-        #message {
-            margin-top: 10px;
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #formMessage {
+            margin-top: 15px;
+        }
+
+        .success {
+            color: green !important;
+        }
+
+        .error {
+            color: red !important;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
         }
     </style>
 </head>
 
 <body>
 
-    <h1>SUPER CARS WORLD</h1>
+    <header>
+        <h1>SUPER CARS WORLD</h1>
+    </header>
 
-    <form id="carForm">
-        <h2>Join Our Community</h2>
+    <section class="form-section">
 
-        <input type="text" name="name" placeholder="Enter your name" required>
+        <div class="form-card">
 
-        <input type="email" name="email" placeholder="Enter your email" required>
+            <h2>Join Super Cars World</h2>
 
-        <input type="tel" name="phone" placeholder="Enter your phone number"
-               pattern="[0-9]{10}" maxlength="10" required>
+            <p>Enter your details to join our car community.</p>
 
-        <button type="submit" id="btn">Submit</button>
+            <form id="carForm">
 
-        <p id="message"></p>
-    </form>
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name"
+                    placeholder="Enter your name" required>
+
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email"
+                    placeholder="Enter your email" required>
+
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone"
+                    placeholder="Enter your phone number"
+                    pattern="[0-9]{10}" maxlength="10" required>
+
+                <button type="submit" id="submitButton">Submit</button>
+
+                <p id="formMessage"></p>
+
+            </form>
+
+        </div>
+
+    </section>
+
+    <footer>
+        <p>© 2026 Super Cars World</p>
+    </footer>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgsN-hdLCNJR3ZdwoZYw2MvGABMGrEu7EImvkBKLofb4QkLht8Hd_ihipzYDLMQnN9fA/exec";
+        const SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
 
-        document.getElementById("carForm").onsubmit = async function(e) {
-            e.preventDefault();
+        document.getElementById("carForm").addEventListener("submit", async function(event) {
 
-            const message = document.getElementById("message");
-            const button = document.getElementById("btn");
+            event.preventDefault();
+
+            const form = this;
+            const button = document.getElementById("submitButton");
+            const status = document.getElementById("formMessage");
 
             if (SCRIPT_URL.includes("PASTE_YOUR")) {
-                message.innerHTML = "Please configure the Apps Script URL.";
+                status.textContent = "Please configure the Apps Script URL.";
+                status.className = "error";
                 return;
             }
 
             button.disabled = true;
-            button.innerHTML = "Submitting...";
+            button.textContent = "Submitting...";
+            status.textContent = "";
+
+            const data = new URLSearchParams(new FormData(form));
 
             try {
+
                 await fetch(SCRIPT_URL, {
                     method: "POST",
                     mode: "no-cors",
-                    body: new URLSearchParams(new FormData(this))
+                    body: data
                 });
 
-                message.innerHTML = "Form submitted successfully!";
-                this.reset();
+                status.textContent =
+                    "Request sent. Check Google Sheets to verify your submission.";
+
+                status.className = "success";
+
+                form.reset();
 
             } catch (error) {
-                message.innerHTML = "Submission failed. Try again.";
+
+                console.error(error);
+
+                status.textContent = "Unable to send. Please try again.";
+                status.className = "error";
+
+            } finally {
+
+                button.disabled = false;
+                button.textContent = "Submit";
+
             }
 
-            button.disabled = false;
-            button.innerHTML = "Submit";
-        };
+        });
     </script>
 
 </body>
